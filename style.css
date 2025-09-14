@@ -199,7 +199,7 @@ button {
   border-radius: 4px 4px 0 0;
   font-size: 1.6rem;
   inset: 0;
-  padding:1.5rem 1rem;
+  padding: 1.5rem 1rem;
   backdrop-filter: blur(3px);
   pointer-events: none;
   transition: all 0.4s ease;
@@ -213,8 +213,6 @@ button {
 .product-img-description:hover .product-description {
   transform: scale(1);
   opacity: 1;
-
-
 }
 
 .product-name {
@@ -287,4 +285,25 @@ button {
   background: #404251;
   width: 100%;
   border-radius: 5px;
+}
+
+/* FOOTER */
+.footer {
+}
+
+.footer-text {
+  font-size: 1.6rem;
+  text-align: center;
+  margin-top: 5rem;
+  margin-bottom: 1rem;
+}
+
+.footer-text a {
+  display: inline-block;
+  transition: all 0.3s ease;
+  font-size: 1.6rem;
+  color: #60519bv;
+}
+.footer-text a:hover {
+  transform: scale(1.03);
 }
