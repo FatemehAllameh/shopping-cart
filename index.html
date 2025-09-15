@@ -10,7 +10,7 @@
   <body>
     <!-- HEADER -->
     <header class="header">
-      <h1 class="products-title">Products</h1>
+      <h1 class="header-title">Products</h1>
       <div>
         <input
           type="text"
@@ -18,8 +18,8 @@
           class="search-input"
           autocomplete="off"
         />
-        <button type="button" class="shop-cart-btn">
-          <i class="fa fa-shopping-bag"></i>
+        <button type="button" class="toggle-btn">
+          <i class="toggle-icon fa fa-shopping-bag"></i>
           <span class="quantity-text">0</span>
         </button>
       </div>
@@ -38,7 +38,10 @@
                 class="product-img"
               />
               <p class="product-description">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis numquam cum labore reiciendis consequuntur repellat. Ad voluptates optio expedita, harum esse laboriosam dolorum dolor atque.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
+                numquam cum labore reiciendis consequuntur repellat. Ad
+                voluptates optio expedita, harum esse laboriosam dolorum dolor
+                atque.
               </p>
             </div>
             <h3 class="product-name">Product Name</h3>
@@ -56,7 +59,10 @@
                 class="product-img"
               />
               <p class="product-description">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis numquam cum labore reiciendis consequuntur repellat. Ad voluptates optio expedita, harum esse laboriosam dolorum dolor atque.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
+                numquam cum labore reiciendis consequuntur repellat. Ad
+                voluptates optio expedita, harum esse laboriosam dolorum dolor
+                atque.
               </p>
             </div>
             <h3 class="product-name">Product Name</h3>
@@ -74,7 +80,10 @@
                 class="product-img"
               />
               <p class="product-description">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis numquam cum labore reiciendis consequuntur repellat. Ad voluptates optio expedita, harum esse laboriosam dolorum dolor atque.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
+                numquam cum labore reiciendis consequuntur repellat. Ad
+                voluptates optio expedita, harum esse laboriosam dolorum dolor
+                atque.
               </p>
             </div>
             <h3 class="product-name">Product Name</h3>
@@ -92,7 +101,10 @@
                 class="product-img"
               />
               <p class="product-description">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis numquam cum labore reiciendis consequuntur repellat. Ad voluptates optio expedita, harum esse laboriosam dolorum dolor atque.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis
+                numquam cum labore reiciendis consequuntur repellat. Ad
+                voluptates optio expedita, harum esse laboriosam dolorum dolor
+                atque.
               </p>
             </div>
             <h3 class="product-name">Product Name</h3>
@@ -103,20 +115,94 @@
           </div>
         </div>
         <div class="product-categories">
-            <h3 class="categories-title">Categories</h3>
-            <div class="category-buttons">
-                <button type="button" class="category-btn active">All</button>
-                <button type="button" class="category-btn">Women's clothing</button>
-                <button type="button" class="category-btn">Men's clothing</button>
-                <button type="button" class="category-btn">Electronics</button>
-            </div>
+          <h3 class="categories-title">Categories</h3>
+          <div class="category-buttons">
+            <button type="button" class="category-btn active">All</button>
+            <button type="button" class="category-btn">Women's clothing</button>
+            <button type="button" class="category-btn">Men's clothing</button>
+            <button type="button" class="category-btn">Electronics</button>
+          </div>
         </div>
+      </section>
+
+      <!-- Section for shopping cart -->
+
+       <!-- Chosen Products -->
+      <section class="shopping-cart-section">
+        <div class="items-list">
+          <div class="cart-item">
+            <img src="./assets/product.jpg" alt="" class="item-img" />
+            <h3 class="item-name">Product Name</h3>
+            <p class="item-price">$19.55</p>
+            <div class="quantity-control">
+              <button class="quantity-control-btn increase-btn">
+                <i class="fa fa-plus"></i>
+              </button>
+              <p class="quantity-control-text">1</p>
+              <button class="quantity-control-btn decrease-btn">
+                <i class="fa fa-minus"></i>
+              </button>
+            </div>
+            <button class="remove-btn">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+          <!--  -->
+          <div class="cart-item">
+            <img src="./assets/product.jpg" alt="" class="item-img" />
+            <h3 class="item-name">Product Name</h3>
+            <p class="item-price">$19.55</p>
+            <div class="quantity-control">
+              <button class="quantity-control-btn increase-btn">
+                <i class="fa fa-plus"></i>
+              </button>
+              <p class="quantity-control-text">1</p>
+              <button class="quantity-control-btn decrease-btn">
+                <i class="fa fa-minus"></i>
+              </button>
+            </div>
+            <button class="remove-btn">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+          <!--  -->
+          <div class="cart-item">
+            <img src="./assets/product.jpg" alt="" class="item-img" />
+            <h3 class="item-name">Product Name</h3>
+            <p class="item-price">$19.55</p>
+            <div class="quantity-control">
+              <button class="quantity-control-btn increase-btn">
+                <i class="fa fa-plus"></i>
+              </button>
+              <p class="quantity-control-text">1</p>
+              <button class="quantity-control-btn decrease-btn">
+                <i class="fa fa-minus"></i>
+              </button>
+            </div>
+            <button class="remove-btn">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+          <!--  -->
+        </div>
+        <!-- Checkoutbox -->
+         <div class="checkout-box">
+          <p class="total-price">total price: $<span class="total-price-text">0.00</span></p>
+          <div class="checkout-btns">
+            <button type="button" class="checkout-btn clear-all-btn">Clear All</button>
+            <button type="button" class="checkout-btn checkout-proceed-btn">Check Out</button>
+
+          </div>
+         </div>
       </section>
     </main>
     <!-- FOOTER -->
-      <footer class="footer">
-        <p class="footer-text">Made with 💗 by <a href="https://github.com/FatemehAllameh">Fatemeh Allameh</a></p>
-      </footer>
+    <footer class="footer">
+      <p class="footer-text">
+        Made with 💜 by
+        <a href="https://github.com/FatemehAllameh">Fatemeh Allameh</a>
+      </p>
+    </footer>
     <!-- SCRIPTS -->
     <script src="./script.js"></script>
   </body>
