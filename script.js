@@ -6,6 +6,7 @@ const shoppingCartSection = document.querySelector(".shopping-cart-section");
 const headerQuantityText = document.querySelector(".quantity-text");
 const headerTitle = document.querySelector(".header-title");
 const productsList = document.querySelector(".products-list");
+const conditionText = document.querySelector(".condition-text");
 
 let inProductSection = true;
 
@@ -34,14 +35,22 @@ toggleButton.addEventListener("click", () => {
 
 // API CALL: GET PRODUCTS
 const getProducts = async () => {
-  const responsse = await axios.get("https://fakestoreapi.com/products");
+  try {
+    const responsse = await axios.get("https://fakestoreapi.com/products");
   const data = await responsse.data;
   console.log(data);
+  conditionText.style.display="none";
   renderProducts(data);
+  }
+  catch(err) {
+    conditionText.textContent=err.message;
+  }
+  
 };
 
 // RENDER PRODUCTS
 const renderProducts = (products) => {
+  productsSection.style.display="flex";
   products.map((product) => {
     const { description, image, price, title } = product;
     // CREATE PRODUCT CARD
@@ -52,14 +61,14 @@ const renderProducts = (products) => {
     <div class="product-img-description">
               <img
                 src="${image}"
-                alt="${title}"
+                alt="${shortenTitle(title)}"
                 class="product-img"
               />
               <p class="product-description">
                 ${description}
               </p>
             </div>
-            <h3 class="product-name">${title}</h3>
+            <h3 class="product-name">${shortenTitle(title)}</h3>
             <div class="product-information">
               <p class="product-price">$${price}</p>
               <button class="add-to-cart-btn">Add to cart</button>
@@ -68,6 +77,19 @@ const renderProducts = (products) => {
     // APPEND TO PRODUCT LIST
     productsList.appendChild(productCard);
   });
+};
+
+// SHORTEN TITLE
+const shortenTitle = (title) => {
+  const splitedTitle = title.split(" ");
+  let newTitle = null;
+  if (splitedTitle[1] === "-") {
+    newTitle = `${splitedTitle[0]} ${splitedTitle[1]} ${splitedTitle[2]}`;
+  }
+  else {
+    newTitle = `${splitedTitle[0]} ${splitedTitle[1]}`;
+  }
+  return newTitle;
 };
 
 // INITIAL CALL

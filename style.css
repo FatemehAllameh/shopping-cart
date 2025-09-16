@@ -142,14 +142,16 @@ button {
 .main {
   padding-right: 1rem;
   padding-left: 1rem;
-  margin-top: 12rem;
+  margin-top: 13rem;
 }
 
 .condition-text {
+  font-size: 2rem;
+  text-align: center;
 }
 
 .products-section {
-  display: flex;
+  display: none;
   align-items: center;
   flex-direction: column-reverse;
 }
@@ -171,7 +173,7 @@ button {
   box-shadow: -2px 2px 5px rgba(0, 0, 0, 0.2);
   padding: 1rem 0.8rem;
   width: 90%;
-  min-height: 40rem;
+  min-height: 36rem;
   font-size: 1.6rem;
 }
 
@@ -234,12 +236,14 @@ button {
 }
 
 .product-price {
+  font-size: 1.7rem;
 }
 
 .add-to-cart-btn {
   background: #60519b;
   padding: 0.5rem 1rem;
   border-radius: 8px;
+  font-size: 1.7rem;
   transition: all 0.3s ease;
 }
 
