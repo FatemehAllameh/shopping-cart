@@ -110,14 +110,14 @@ const addToCart = (selectedProduct) => {
 
 const renderCart = () => {
   itemsList.innerHTML = "";
-  if (cartData.length !==0) {
-    checkoutBox.style.display="flex";
-    emptyTexts.style.display="none";
+  if (cartData.length !== 0) {
+    checkoutBox.style.display = "flex";
+    emptyTexts.style.display = "none";
     cartData.map((item) => {
-    const { image, price, title, quantity } = item;
-    const cartItem = document.createElement("div");
-    cartItem.className = "cart-item";
-    cartItem.innerHTML = `
+      const { image, price, title, quantity } = item;
+      const cartItem = document.createElement("div");
+      cartItem.className = "cart-item";
+      cartItem.innerHTML = `
           <img src="${image}" alt="${title}" class="item-img" />
           <h3 class="item-name">${shortenTitle(title)}</h3>
            <p class="item-price">$${price}</p>
@@ -134,29 +134,69 @@ const renderCart = () => {
             <i class="fa fa-times"></i>
           </button>
     `;
-    itemsList.appendChild(cartItem);
-  });
+
+      // EVENT LISTENER TO INCREASE ITEM
+      const increaseButton = cartItem.querySelector(".increase-btn");
+      increaseButton.addEventListener("click", () => increaseQuantity(item));
+      // EVENT LISTENER TO DECREASE ITEM
+      const decreaseButton = cartItem.querySelector(".decrease-btn");
+      decreaseButton.addEventListener("click", () => decreaseQuantity(item));
+      // EVENT LISTENER TO REMOVE ITEM
+      const removeButton = cartItem.querySelector(".remove-btn");
+      removeButton.addEventListener("click", () => removeItem(item));
+
+      itemsList.appendChild(cartItem);
+    });
   } else {
-    checkoutBox.style.display="none";
-    emptyTexts.style.display="block";
+    checkoutBox.style.display = "none";
+    emptyTexts.style.display = "block";
     const backToShop = document.querySelector(".back-to-shop");
     backToShop.addEventListener("click", () => {
       productsSection.style.display = "flex";
-    shoppingCartSection.style.display = "none";
-    toggleIcon.classList.replace("fa-tshirt", "fa-shopping-bag");
-    headerQuantityText.style.display = "flex";
-    toggleIcon.style.left = "1rem";
-    headerTitle.textContent = "Products";
-    inProductSection = true;
+      shoppingCartSection.style.display = "none";
+      toggleIcon.classList.replace("fa-tshirt", "fa-shopping-bag");
+      headerQuantityText.style.display = "flex";
+      toggleIcon.style.left = "1rem";
+      headerTitle.textContent = "Products";
+      inProductSection = true;
     });
-  };
+  }
   quantityText.textContent = cartData.length;
 
   const totalPrice = cartData.reduce((total, item) => {
     return total + item.quantity * item.price;
   }, 0);
   totalPriceText.textContent = totalPrice.toLocaleString();
+};
 
+// FUNCTION TO INCREASE ITEM QUANTITY
+const increaseQuantity = (item) => {
+  const cartItem = cartData.find((product) => product.id === item.id);
+  if (cartItem) {
+    cartItem.quantity++;
+    renderCart();
+    savrToLocalStorage();
+  }
+};
+
+// FUNCTION TO DECREASE ITEM QUANTITY
+const decreaseQuantity = (item) => {
+  const cartItem = cartData.find((product) => product.id === item.id);
+  if (cartItem && cartItem.quantity > 1) {
+    cartItem.quantity--;
+    renderCart();
+    savrToLocalStorage();
+  }
+};
+
+// FUNCTION TO REMOVE ITEM FROM SHOPPING CART
+const removeItem = (item) => {
+  const index = cartData.findIndex((product) => product.id === item.id);
+  if (index !== -1) {
+    cartData.splice(index, 1);
+    renderCart();
+    savrToLocalStorage();
+  }
 };
 
 // FUNCTION TO SAVE CART PRODUCT IN LOCAL STORAGE
