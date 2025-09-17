@@ -10,7 +10,8 @@ const conditionText = document.querySelector(".condition-text");
 const itemsList = document.querySelector(".items-list");
 const emptyTexts = document.querySelector(".empty-texts");
 const checkoutBox = document.querySelector(".checkout-box");
-
+const quantityText = document.querySelector(".quantity-text");
+const totalPriceText = document.querySelector(".total-price-text");
 let cartData = JSON.parse(localStorage.getItem("cart")) || [];
 let inProductSection = true;
 
@@ -149,7 +150,13 @@ const renderCart = () => {
     inProductSection = true;
     });
   };
-  
+  quantityText.textContent = cartData.length;
+
+  const totalPrice = cartData.reduce((total, item) => {
+    return total + item.quantity * item.price;
+  }, 0);
+  totalPriceText.textContent = totalPrice.toLocaleString();
+
 };
 
 // FUNCTION TO SAVE CART PRODUCT IN LOCAL STORAGE
