@@ -7,7 +7,9 @@ const headerQuantityText = document.querySelector(".quantity-text");
 const headerTitle = document.querySelector(".header-title");
 const productsList = document.querySelector(".products-list");
 const conditionText = document.querySelector(".condition-text");
+const itemsList = document.querySelector(".items-list");
 
+let cartData = [];
 let inProductSection = true;
 
 // EVENTS
@@ -37,22 +39,20 @@ toggleButton.addEventListener("click", () => {
 const getProducts = async () => {
   try {
     const responsse = await axios.get("https://fakestoreapi.com/products");
-  const data = await responsse.data;
-  console.log(data);
-  conditionText.style.display="none";
-  renderProducts(data);
+    const data = await responsse.data;
+    console.log(data);
+    conditionText.style.display = "none";
+    renderProducts(data);
+  } catch (err) {
+    conditionText.textContent = err.message;
   }
-  catch(err) {
-    conditionText.textContent=err.message;
-  }
-  
 };
 
 // RENDER PRODUCTS
 const renderProducts = (products) => {
-  productsSection.style.display="flex";
+  productsSection.style.display = "flex";
   products.map((product) => {
-    const { description, image, price, title } = product;
+    const { id, description, image, price, title } = product;
     // CREATE PRODUCT CARD
     const productCard = document.createElement("div");
     productCard.className = "product";
@@ -71,11 +71,62 @@ const renderProducts = (products) => {
             <h3 class="product-name">${shortenTitle(title)}</h3>
             <div class="product-information">
               <p class="product-price">$${price}</p>
-              <button class="add-to-cart-btn">Add to cart</button>
+              <button class="add-to-cart-btn" data-id="${id}">Add to cart</button>
             </div>
     `;
+    const addToCartButton = productCard.querySelector(".add-to-cart-btn");
+    addToCartButton.addEventListener("click", (e) => {
+      const productId = e.target.dataset.id;
+      const selectedProduct = products.find((product) => {
+        return product.id == productId;
+      });
+      addToCart(selectedProduct);
+    });
+
     // APPEND TO PRODUCT LIST
     productsList.appendChild(productCard);
+  });
+};
+
+// FINCTION TO ADD PRODUCT INTO SHOPPING CART
+const addToCart = (selectedProduct) => {
+  // SEE IF PRODUCT EXIST IN CART OR ITS NEW PRODUCT
+  const cartItem = cartData.find((product) => {
+    return product.id == selectedProduct.id;
+  });
+  if (!cartItem) {
+    cartData.push({ ...selectedProduct, quantity: 1 });
+  } else {
+    cartItem.quantity++;
+  }
+
+  renderCart();
+};
+
+const renderCart = () => {
+  itemsList.innerHTML = "";
+  cartData.map((item) => {
+    const { image, price, title, quantity } = item;
+    const cartItem = document.createElement("div");
+    cartItem.className = "cart-item";
+    cartItem.innerHTML = `
+          <img src="${image}" alt="${title}" class="item-img" />
+          <h3 class="item-name">${shortenTitle(title)}</h3>
+           <p class="item-price">$${price}</p>
+          <div class="quantity-control">
+            <button class="quantity-control-btn increase-btn">
+              <i class="fa fa-plus"></i>
+            </button>
+            <p class="quantity-control-text">${quantity}</p>
+            <button class="quantity-control-btn decrease-btn">
+              <i class="fa fa-minus"></i>
+            </button>
+          </div>
+          <button class="remove-btn">
+            <i class="fa fa-times"></i>
+          </button>
+    `;
+    itemsList.appendChild(cartItem);
   });
 };
 
@@ -85,8 +136,7 @@ const shortenTitle = (title) => {
   let newTitle = null;
   if (splitedTitle[1] === "-") {
     newTitle = `${splitedTitle[0]} ${splitedTitle[1]} ${splitedTitle[2]}`;
-  }
-  else {
+  } else {
     newTitle = `${splitedTitle[0]} ${splitedTitle[1]}`;
   }
   return newTitle;
