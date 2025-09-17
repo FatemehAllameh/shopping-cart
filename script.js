@@ -8,8 +8,10 @@ const headerTitle = document.querySelector(".header-title");
 const productsList = document.querySelector(".products-list");
 const conditionText = document.querySelector(".condition-text");
 const itemsList = document.querySelector(".items-list");
+const emptyTexts = document.querySelector(".empty-texts");
+const checkoutBox = document.querySelector(".checkout-box");
 
-let cartData = [];
+let cartData = JSON.parse(localStorage.getItem("cart")) || [];
 let inProductSection = true;
 
 // EVENTS
@@ -100,12 +102,17 @@ const addToCart = (selectedProduct) => {
     cartItem.quantity++;
   }
 
+  // SAVE CART ITEMS IN LOCAL STORAGE
+  savrToLocalStorage();
   renderCart();
 };
 
 const renderCart = () => {
   itemsList.innerHTML = "";
-  cartData.map((item) => {
+  if (cartData.length !==0) {
+    checkoutBox.style.display="flex";
+    emptyTexts.style.display="none";
+    cartData.map((item) => {
     const { image, price, title, quantity } = item;
     const cartItem = document.createElement("div");
     cartItem.className = "cart-item";
@@ -128,6 +135,26 @@ const renderCart = () => {
     `;
     itemsList.appendChild(cartItem);
   });
+  } else {
+    checkoutBox.style.display="none";
+    emptyTexts.style.display="block";
+    const backToShop = document.querySelector(".back-to-shop");
+    backToShop.addEventListener("click", () => {
+      productsSection.style.display = "flex";
+    shoppingCartSection.style.display = "none";
+    toggleIcon.classList.replace("fa-tshirt", "fa-shopping-bag");
+    headerQuantityText.style.display = "flex";
+    toggleIcon.style.left = "1rem";
+    headerTitle.textContent = "Products";
+    inProductSection = true;
+    });
+  };
+  
+};
+
+// FUNCTION TO SAVE CART PRODUCT IN LOCAL STORAGE
+const savrToLocalStorage = () => {
+  localStorage.setItem("cart", JSON.stringify(cartData));
 };
 
 // SHORTEN TITLE
@@ -142,5 +169,6 @@ const shortenTitle = (title) => {
   return newTitle;
 };
 
+renderCart();
 // INITIAL CALL
 getProducts();

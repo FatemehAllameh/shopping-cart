@@ -328,6 +328,25 @@ button {
   flex-direction: column-reverse;
 }
 
+.empty-texts {}
+
+.empty-cart-text {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.back-to-shop {
+  font-size: 2rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.back-to-shop:hover {
+  text-decoration: underline;
+}
+
+
 .items-list {
   width: 100%;
   display: flex;
@@ -420,7 +439,7 @@ button {
 .checkout-box {
   background-color: #bfc0d1;
   padding: 1.5rem 1rem;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   flex-direction: column;
