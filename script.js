@@ -14,45 +14,58 @@ const quantityText = document.querySelector(".quantity-text");
 const totalPriceText = document.querySelector(".total-price-text");
 const clearAllButton = document.querySelector(".clear-all-btn");
 const checkoutProceedButton = document.querySelector(".checkout-proceed-btn");
+const productCategoriesWrapper = document.querySelector(".product-categories");
 const categoryButtonContainer = document.querySelector(".category-buttons");
+const searchInput = document.querySelector(".search-input");
 
+// GET CART DATA FROM LOCALSTORAGE OR SET EMPTY ARRAY
 let cartData = JSON.parse(localStorage.getItem("cart")) || [];
+
+// FLAG TO CHECK IF USER IS IN PRODUCT SECTION
 let inProductSection = true;
+// FLAG TO TRACK FETCH ERRORS
+let hasError = false;
+// FLAG TO TRACK SEARCH ERRORS
+let isSearchError = false;
+// VARIABLE TO STORE ALL PRODUCTS 
 
 let allProducts = null;
 
-// EVENTS
+// TOGGLE BETWEEN PRODUCTS SECTION AND SHOPPING CART
 toggleButton.addEventListener("click", () => {
   if (inProductSection) {
+    // HIDE CONDITION TEXT
+    conditionText.style.display = "none";
     // SHOW SHOPPING CART
     productsSection.style.display = "none";
     shoppingCartSection.style.display = "flex";
+    // CHANGE ICON FROM SHOPPING-BAG TO T-SHIRT
     toggleIcon.classList.replace("fa-shopping-bag", "fa-tshirt");
+    // HIDE HEADER QUANTITY TEXT
     headerQuantityText.style.display = "none";
+    // ADJUST ICON POSITION
     toggleIcon.style.left = "0.8rem";
+    // SET FLAG: NOW USER IS IN SHOPPING CART SECTION
     headerTitle.textContent = "Shopping Cart";
     inProductSection = false;
   } else {
-    // SHOW PRODUCTS
-    productsSection.style.display = "flex";
-    shoppingCartSection.style.display = "none";
-    toggleIcon.classList.replace("fa-tshirt", "fa-shopping-bag");
-    headerQuantityText.style.display = "flex";
-    toggleIcon.style.left = "1rem";
-    headerTitle.textContent = "Products";
-    inProductSection = true;
+    goToProductsSection();
   }
 });
 
 // API CALL: GET PRODUCTS
 const getProducts = async () => {
   try {
+    // FETCH PRODUCTS DATA FROM API
     const responsse = await axios.get("https://fakestoreapi.com/products");
     const data = await responsse.data;
     allProducts = data;
-    conditionText.style.display = "none";
+    // HIDE LOADING TEXT
+    if (!hasError) {
+      conditionText.style.display = "none";
+    }
 
-    // GET ALL PRODUCTS CATEGORY TO CREATE ITS CATEGORY BUTTONS
+    // GET ALL PRODUCTS CATEGORY TO CREATE CATEGORY BUTTONS
     const categories = data.reduce(
       (acc, item) => {
         if (!acc.includes(item.category)) {
@@ -63,10 +76,15 @@ const getProducts = async () => {
       ["all"]
     );
 
+    // RENDER CATEGORY BUTTONS
     renderCategoryButtons(categories);
 
+    // RENDER ALL PRODUCTS
     renderProducts(data);
+
+    productCategoriesWrapper.style.display = "flex";
   } catch (err) {
+    hasError = true;
     conditionText.textContent = err.message;
   }
 };
@@ -89,6 +107,8 @@ const renderCategoryButtons = (categories) => {
 
 // FILTERING PRODUCTS BY CATEGORY
 const searchProductByCategory = (btn) => {
+  searchInput.value = "";
+  handleSearch();
   // REMOVE ACTIVE CLASS FROM ALL CATEGORY BUTTONS
   const allButtons = document.querySelectorAll(".category-btn");
   allButtons.forEach((button) => {
@@ -114,17 +134,42 @@ const capitalizeFirstLetter = (categoryName) => {
   const newCategoryName = `${firsLetter.toUpperCase()}${categoryName.slice(1)}`;
   return newCategoryName;
 };
+
+// FILTERING PRODUCTS BY SEARCH
+
+const handleSearch = () => {
+  const inputValue = searchInput.value.toLocaleLowerCase().trim();
+  const searchedProducts = allProducts.filter((item) => {
+    return shortenTitle(item.title).toLocaleLowerCase().includes(inputValue);
+  });
+  if (searchedProducts.length > 0) {
+    conditionText.style.display = "none";
+    isSearchError = false;
+    renderProducts(searchedProducts);
+  } else {
+    isSearchError = true;
+    conditionText.style.display = "block";
+    conditionText.textContent = "Product Doesn't Exist!";
+    renderProducts([]);
+  }
+  if (!inProductSection) {
+    goToProductsSection();
+  }
+};
+searchInput.addEventListener("input", handleSearch);
+
 // RENDER PRODUCTS
 const renderProducts = (products) => {
-  productsList.innerHTML = "";
-  productsSection.style.display = "flex";
-  products.map((product) => {
-    const { id, description, image, price, title } = product;
-    // CREATE PRODUCT CARD
-    const productCard = document.createElement("div");
-    productCard.className = "product";
-    // PRODUCT CARD HTML
-    productCard.innerHTML = `
+  if (inProductSection) {
+    productsList.innerHTML = "";
+    productsSection.style.display = "flex";
+    products.map((product) => {
+      const { id, description, image, price, title } = product;
+      // CREATE PRODUCT CARD
+      const productCard = document.createElement("div");
+      productCard.className = "product";
+      // PRODUCT CARD HTML
+      productCard.innerHTML = `
     <div class="product-img-description">
               <img
                 src="${image}"
@@ -141,18 +186,20 @@ const renderProducts = (products) => {
               <button class="add-to-cart-btn" data-id="${id}">Add to cart</button>
             </div>
     `;
-    const addToCartButton = productCard.querySelector(".add-to-cart-btn");
-    addToCartButton.addEventListener("click", (e) => {
-      const productId = e.target.dataset.id;
-      const selectedProduct = products.find((product) => {
-        return product.id == productId;
+      const addToCartButton = productCard.querySelector(".add-to-cart-btn");
+      // ADD SELECTED PRODUCT TO CART WHEN BUTTON IS CLICKED
+      addToCartButton.addEventListener("click", (e) => {
+        const productId = e.target.dataset.id;
+        const selectedProduct = products.find((product) => {
+          return product.id == productId;
+        });
+        addToCart(selectedProduct);
       });
-      addToCart(selectedProduct);
-    });
 
-    // APPEND TO PRODUCT LIST
-    productsList.appendChild(productCard);
-  });
+      // APPEND TO PRODUCT LIST
+      productsList.appendChild(productCard);
+    });
+  }
 };
 
 // FINCTION TO ADD PRODUCT INTO SHOPPING CART
@@ -172,6 +219,7 @@ const addToCart = (selectedProduct) => {
   renderCart();
 };
 
+// RENDER SHOPPING CART
 const renderCart = () => {
   itemsList.innerHTML = "";
   if (cartData.length !== 0) {
@@ -179,6 +227,7 @@ const renderCart = () => {
     emptyTexts.style.display = "none";
     cartData.map((item) => {
       const { image, price, title, quantity } = item;
+      // CREATE CART ITEM
       const cartItem = document.createElement("div");
       cartItem.className = "cart-item";
       cartItem.innerHTML = `
@@ -208,7 +257,7 @@ const renderCart = () => {
       // EVENT LISTENER TO REMOVE ITEM
       const removeButton = cartItem.querySelector(".remove-btn");
       removeButton.addEventListener("click", () => removeItem(item));
-
+      // APPEND TO CART ITEMS LIST
       itemsList.appendChild(cartItem);
     });
   } else {
@@ -216,17 +265,13 @@ const renderCart = () => {
     emptyTexts.style.display = "block";
     const backToShop = document.querySelector(".back-to-shop");
     backToShop.addEventListener("click", () => {
-      productsSection.style.display = "flex";
-      shoppingCartSection.style.display = "none";
-      toggleIcon.classList.replace("fa-tshirt", "fa-shopping-bag");
-      headerQuantityText.style.display = "flex";
-      toggleIcon.style.left = "1rem";
-      headerTitle.textContent = "Products";
-      inProductSection = true;
+      goToProductsSection();
     });
   }
+  // DISPLAY THE NUMBER OF PRODUCTS IN THE CART
   quantityText.textContent = cartData.length;
 
+  // CALCULATE AND DISPLAY THE TOTAL PRICE OF PRODUCTS IN THE CART
   const totalPrice = cartData.reduce((total, item) => {
     return total + item.quantity * item.price;
   }, 0);
@@ -295,7 +340,6 @@ checkoutProceedButton.addEventListener("click", () => {
     showConfirmButton: false,
     timer: 2000,
   });
-
   cartData = [];
   renderCart();
   savrToLocalStorage();
@@ -316,6 +360,34 @@ const shortenTitle = (title) => {
     newTitle = `${splitedTitle[0]} ${splitedTitle[1]}`;
   }
   return newTitle;
+};
+
+// GO TO PRODUCT SECTION
+const goToProductsSection = () => {
+  if (conditionText.textContent === "Product Doesn't Exist!") {
+    conditionText.style.display = "block";
+  } else {
+    conditionText.style.display = "none";
+  }
+
+  if (hasError) {
+    conditionText.style.display = "block";
+  } else {
+    conditionText.style.display = "none";
+  }
+  // SHOW PRODUCTS
+  productsSection.style.display = "flex";
+  shoppingCartSection.style.display = "none";
+  toggleIcon.classList.replace("fa-tshirt", "fa-shopping-bag");
+  headerQuantityText.style.display = "flex";
+  toggleIcon.style.left = "1rem";
+  headerTitle.textContent = "Products";
+  inProductSection = true;
+  if (isSearchError) {
+    conditionText.style.display = "block";
+    conditionText.textContent = "Product Doesn't Exist!";
+    renderProducts([]);
+  }
 };
 
 renderCart();
