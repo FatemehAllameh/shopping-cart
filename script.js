@@ -19,6 +19,8 @@ const categoryButtonContainer = document.querySelector(".category-buttons");
 let cartData = JSON.parse(localStorage.getItem("cart")) || [];
 let inProductSection = true;
 
+let allProducts = null;
+
 // EVENTS
 toggleButton.addEventListener("click", () => {
   if (inProductSection) {
@@ -47,7 +49,7 @@ const getProducts = async () => {
   try {
     const responsse = await axios.get("https://fakestoreapi.com/products");
     const data = await responsse.data;
-    console.log(data);
+    allProducts = data;
     conditionText.style.display = "none";
 
     // GET ALL PRODUCTS CATEGORY TO CREATE ITS CATEGORY BUTTONS
@@ -76,11 +78,34 @@ const renderCategoryButtons = (categories) => {
     const categoryButton = `
       <button type="button" class="category-btn ${
         category === "all" ? "active" : ""
-      }">
+      }"
+      data-category="${category}"
+      onclick="searchProductByCategory(this)">
       ${capitalizeFirstLetter(category)}</button>
     `;
     categoryButtonContainer.innerHTML += categoryButton;
   });
+};
+
+// FILTERING PRODUCTS BY CATEGORY
+const searchProductByCategory = (btn) => {
+  // REMOVE ACTIVE CLASS FROM ALL CATEGORY BUTTONS
+  const allButtons = document.querySelectorAll(".category-btn");
+  allButtons.forEach((button) => {
+    button.classList.remove("active");
+  });
+  // ADD ACTIVE CLASS TO THE CLICKED CATEGORY BUTTON
+  btn.classList.add("active");
+
+  const buttonCategory = btn.dataset.category;
+  if (buttonCategory === "all") {
+    renderProducts(allProducts);
+  } else {
+    const filteredProducts = allProducts.filter(
+      (item) => item.category === buttonCategory
+    );
+    renderProducts(filteredProducts);
+  }
 };
 
 // CAPITALIZE THE FIRST LETTER OF CATEGORY NAMES
@@ -91,6 +116,7 @@ const capitalizeFirstLetter = (categoryName) => {
 };
 // RENDER PRODUCTS
 const renderProducts = (products) => {
+  productsList.innerHTML = "";
   productsSection.style.display = "flex";
   products.map((product) => {
     const { id, description, image, price, title } = product;
