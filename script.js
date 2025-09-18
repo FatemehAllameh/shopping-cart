@@ -12,6 +12,9 @@ const emptyTexts = document.querySelector(".empty-texts");
 const checkoutBox = document.querySelector(".checkout-box");
 const quantityText = document.querySelector(".quantity-text");
 const totalPriceText = document.querySelector(".total-price-text");
+const clearAllButton = document.querySelector(".clear-all-btn");
+const checkoutProceedButton = document.querySelector(".checkout-proceed-btn");
+
 let cartData = JSON.parse(localStorage.getItem("cart")) || [];
 let inProductSection = true;
 
@@ -198,6 +201,44 @@ const removeItem = (item) => {
     savrToLocalStorage();
   }
 };
+
+// CLEAR CART WHEN THE CLEAR BUTTON IS CLICKED
+clearAllButton.addEventListener("click", () => {
+  Swal.fire({
+    title: "Are you sure to clear shopping cart?",
+    showDenyButton: true,
+    confirmButtonText: "Clear",
+    denyButtonText: `Cancel`,
+    customClass: {
+      popup: "swal-popup",
+      title: "swal-title",
+      confirmButton: "swal-confirm",
+      denyButton: "swal-deny",
+      actions: "swal-actions",
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      cartData = [];
+      renderCart();
+      savrToLocalStorage();
+    }
+  });
+});
+
+// CHECKOUT SHOPPING CART
+checkoutProceedButton.addEventListener("click", () => {
+  Swal.fire({
+    title: "Checkout Successfuly Done!",
+    position: "center",
+    icon: "success",
+    showConfirmButton: false,
+    timer: 2000,
+  });
+
+  cartData = [];
+  renderCart();
+  savrToLocalStorage();
+});
 
 // FUNCTION TO SAVE CART PRODUCT IN LOCAL STORAGE
 const savrToLocalStorage = () => {
