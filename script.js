@@ -14,6 +14,7 @@ const quantityText = document.querySelector(".quantity-text");
 const totalPriceText = document.querySelector(".total-price-text");
 const clearAllButton = document.querySelector(".clear-all-btn");
 const checkoutProceedButton = document.querySelector(".checkout-proceed-btn");
+const categoryButtonContainer = document.querySelector(".category-buttons");
 
 let cartData = JSON.parse(localStorage.getItem("cart")) || [];
 let inProductSection = true;
@@ -48,12 +49,46 @@ const getProducts = async () => {
     const data = await responsse.data;
     console.log(data);
     conditionText.style.display = "none";
+
+    // GET ALL PRODUCTS CATEGORY TO CREATE ITS CATEGORY BUTTONS
+    const categories = data.reduce(
+      (acc, item) => {
+        if (!acc.includes(item.category)) {
+          acc.push(item.category);
+        }
+        return acc;
+      },
+      ["all"]
+    );
+
+    renderCategoryButtons(categories);
+
     renderProducts(data);
   } catch (err) {
     conditionText.textContent = err.message;
   }
 };
 
+// RENDER CATEGORY BUTTONS
+const renderCategoryButtons = (categories) => {
+  categoryButtonContainer.innerHTML = "";
+  categories.map((category) => {
+    const categoryButton = `
+      <button type="button" class="category-btn ${
+        category === "all" ? "active" : ""
+      }">
+      ${capitalizeFirstLetter(category)}</button>
+    `;
+    categoryButtonContainer.innerHTML += categoryButton;
+  });
+};
+
+// CAPITALIZE THE FIRST LETTER OF CATEGORY NAMES
+const capitalizeFirstLetter = (categoryName) => {
+  const firsLetter = categoryName.charAt(0);
+  const newCategoryName = `${firsLetter.toUpperCase()}${categoryName.slice(1)}`;
+  return newCategoryName;
+};
 // RENDER PRODUCTS
 const renderProducts = (products) => {
   productsSection.style.display = "flex";
