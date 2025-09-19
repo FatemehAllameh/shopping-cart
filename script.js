@@ -14,7 +14,7 @@ const quantityText = document.querySelector(".quantity-text");
 const totalPriceText = document.querySelector(".total-price-text");
 const clearAllButton = document.querySelector(".clear-all-btn");
 const checkoutProceedButton = document.querySelector(".checkout-proceed-btn");
-const productCategoriesWrapper = document.querySelector(".product-categories");
+// const productCategoriesWrapper = document.querySelector(".product-categories");
 const categoryButtonContainer = document.querySelector(".category-buttons");
 const searchInput = document.querySelector(".search-input");
 
@@ -82,7 +82,7 @@ const getProducts = async () => {
     // RENDER ALL PRODUCTS
     renderProducts(data);
 
-    productCategoriesWrapper.style.display = "flex";
+    // productCategoriesWrapper.style.display = "flex";
   } catch (err) {
     hasError = true;
     conditionText.textContent = err.message;
@@ -146,11 +146,14 @@ const handleSearch = () => {
     conditionText.style.display = "none";
     isSearchError = false;
     renderProducts(searchedProducts);
+    productsList.style.display= "flex";
+
   } else {
     isSearchError = true;
     conditionText.style.display = "block";
     conditionText.textContent = "Product Doesn't Exist!";
     renderProducts([]);
+    productsList.style.display= "none";
   }
   if (!inProductSection) {
     goToProductsSection();
@@ -364,12 +367,6 @@ const shortenTitle = (title) => {
 
 // GO TO PRODUCT SECTION
 const goToProductsSection = () => {
-  if (conditionText.textContent === "Product Doesn't Exist!") {
-    conditionText.style.display = "block";
-  } else {
-    conditionText.style.display = "none";
-  }
-
   if (hasError) {
     conditionText.style.display = "block";
   } else {
@@ -389,6 +386,7 @@ const goToProductsSection = () => {
     renderProducts([]);
   }
 };
+
 
 renderCart();
 // INITIAL CALL
